@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Удалить файл</title>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Удалить файл</h2>
+        <form action="{{ url_for('delete_file') }}" method="POST">
+            <label for="file_name">Название файла:</label>
+            <input type="text" id="file_name" name="file_name" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</body>
+</html>

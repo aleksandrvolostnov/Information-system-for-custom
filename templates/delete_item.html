@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Удалить товар</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <h2>Удалить товар</h2>
+        {% if item %}
+        <form method="POST" action="{{ url_for('delete_item', item_id=item.id) }}">
+            <p>Вы уверены, что хотите удалить товар "{{ item.name }}"?</p>
+            <button type="submit">Удалить</button>
+        </form>
+        {% else %}
+            <p>Товар не найден.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

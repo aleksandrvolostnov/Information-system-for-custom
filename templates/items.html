@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Номенклатура</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Общие стили страницы */
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4; /* Светлый фон */
+            color: darkgreen; /* Цвет текста */
+        }
+
+        .items-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 30px;
+            background: linear-gradient(to right, #32cd32, #66c266);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: white;
+            font-size: 22px;
+            margin-bottom: 30px;
+        }
+
+        .items-container ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .items-container li {
+            padding: 15px;
+            background-color: lightgreen; /* Более зеленый фон для контейнера товара */
+            border: 1px solid #99d16c;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .items-container li a {
+            color: #006400;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .items-container li a:hover {
+            color: #004d00;
+        }
+
+        /* Кнопка "Удалить" с темно-зеленым текстом без рамки */
+        .delete-button {
+            background-color: transparent; /* Без фона */
+            color: #006400; /* Темно-зеленый текст */
+            border: none;
+            cursor: pointer;
+            font-family: 'Century Gothic', sans-serif;
+            font-size: 16px;
+            text-align: left;
+            padding: 10px 20px;
+            transition: color 0.3s ease;
+        }
+
+        .delete-button:hover {
+            color: #004d00; /* Темно-зеленый текст при наведении */
+            /* Убрана рамка и фон при наведении */
+        }
+
+        .items-container a,
+        .items-container button {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .items-container a {
+            background-color: transparent;
+            padding: 10px;
+            color: lightcoral;
+            text-align: center;
+            border: none;
+            transition: color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .items-container a:hover {
+            color: darkred;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="items-container">
+        <h1>Номенклатура</h1>
+        <h2>Товары (по дате добавления, новые сверху)</h2>
+        <ul>
+            {% for item in items %}
+                <li>
+                    <strong>Название:</strong> {{ item.name }}<br>
+                    <strong>Код товара:</strong> {{ item.id }}<br>
+                    <strong>Дата ввоза:</strong> {{ item.import_date }}<br>
+                    <strong>Страна происхождения:</strong> {{ item.country_of_origin }}<br>
+                    <strong>Описание:</strong> {{ item.description }}<br>
+
+                    <!-- Отображение документов для товара -->
+                    <strong>Документы:</strong>
+                    <ul>
+                        {% for document in item.documents %}
+                            <li>
+                                <strong>Файл:</strong> {{ document.file_name }}<br>
+                                <a href="{{ url_for('download_file', document_id=document.file_name) }}">Скачать</a> |
+                                <form action="{{ url_for('delete_file', filename=document.file_name) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="delete-button" onclick="return confirm('Вы уверены, что хотите удалить этот файл?');">Удалить</button>
+                                </form>
+                            </li>
+                        {% else %}
+                            <li>Нет загруженных документов.</li>
+                        {% endfor %}
+                    </ul>
+
+                    <a href="{{ url_for('view_item', item_id=item.id) }}">Подробнее</a> |
+                    <a href="{{ url_for('edit_item', item_id=item.id) }}">Редактировать</a> |
+                    <form method="POST" action="{{ url_for('delete_item', item_id=item.id) }}" style="display:inline;">
+                        <button type="submit" class="delete-button" onclick="return confirm('Вы уверены, что хотите удалить этот товар?');">Удалить</button>
+                    </form>
+                </li>
+            {% else %}
+                <li>Номенклатура пуста.</li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('dashboard') }}">Назад к дэшборду</a>
+    </div>
+</body>
+</html>

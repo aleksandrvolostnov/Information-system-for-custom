@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4; /* Светлый фон */
+            color: #2e8b57; /* Темно-зеленый для текста */
+        }
+
+        .form-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background: linear-gradient(to bottom right, #d4f7e2, #32cd32); /* Светло-зеленый фон */
+            border-radius: 15px; /* Скругленные углы */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Мягкая тень */
+        }
+
+        .form-container h2 {
+            text-align: center;
+            color: #006400; /* Темно-зеленый для заголовка */
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: 2px solid #32cd32; /* Зеленая граница */
+            border-radius: 10px;
+            background-color: #e8f5e9; /* Светлый зеленый фон для инпутов */
+            color: #006400; /* Темный текст */
+            font-size: 16px;
+            font-family: Arial, sans-serif; /* Изменение шрифта */
+            box-sizing: border-box;
+        }
+
+        .form-container input:focus {
+            border-color: #006400; /* Темно-зеленая граница при фокусе */
+            background-color: #c8e6c9; /* Более светлый фон при фокусе */
+            outline: none;
+        }
+
+        .form-container button {
+            background: linear-gradient(to left, #32cd32, #006400);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .form-container button:hover {
+            background-color: #228b22; /* Темный зеленый при наведении */
+            transform: translateY(-2px); /* Легкий подъем кнопки при наведении */
+        }
+
+        .form-container a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #32cd32; /* Светло-зеленый текст */
+            text-decoration: none;
+            font-family: 'Century Gothic', sans-serif; /* Century Gothic для ссылки */
+            font-weight: normal; /* Убираем жирный стиль */
+        }
+
+        .form-container a:hover {
+            color: #004d00; /* Темно-зеленый при наведении */
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Вход в систему</h2>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert">{{ messages[0] }}</div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <input type="text" name="username" placeholder="Введите имя пользователя" required>
+            <input type="password" name="password" placeholder="Введите пароль" required>
+            <button type="submit">Войти</button>
+        </form>
+        <a href="{{ url_for('register') }}">Нет аккаунта? Зарегистрируйтесь</a>
+    </div>
+</body>
+</html>

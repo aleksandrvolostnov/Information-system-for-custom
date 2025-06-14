@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск товаров</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Общие стили */
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9; /* фоновый цвет страницы */
+            color: #333;
+        }
+
+        .search-items-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: lightgreen; /* светло-зеленый фон */
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-items-container h1,
+        .search-items-container h2 {
+            text-align: center;
+            color: #006400; /* темно-зеленый цвет заголовков */
+        }
+
+        .search-items-container input,
+        .search-items-container button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: 'Century Gothic', sans-serif;
+        }
+
+        .search-items-container input {
+            border: 2px solid #32cd32;
+            background-color: #f0fff0; /* светлый зеленый фон для полей ввода */
+        }
+
+        .search-items-container input:focus {
+            border-color: #006400;
+            background-color: #e0ffe0; /* более светлый зеленый при фокусе */
+            outline: none;
+        }
+
+        .search-items-container button {
+            background-color: #006400; /* темно-зеленая кнопка */
+            color: lightgreen;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-items-container button:hover {
+            background-color: #004d00; /* темно-зеленый при наведении */
+        }
+
+        .search-items-container ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .search-items-container li {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: lightgreen; /* светлый зеленый фон для списка товаров */
+            border: 1px solid #32cd32;
+        }
+
+        .search-items-container a {
+            color: #006400;
+            text-decoration: none;
+        }
+
+        .search-items-container a:hover {
+            text-decoration: underline;
+        }
+
+        .back-button {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #006400;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            border: 2px solid #32cd32;
+            border-radius: 5px;
+            background-color: lightgreen;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #006400;
+            color: white;
+        }
+
+        label {
+            font-size: 16px;
+            color: #006400;
+            display: block;
+            margin: 10px 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-items-container">
+        <h1>Поиск товаров</h1>
+        <form method="POST" action="{{ url_for('search_items') }}">
+            <input type="text" name="search_query" placeholder="Введите название товара (необязательно)" value="{{ request.form.get('search_query', '') }}">
+            <input type="text" name="country" placeholder="Введите страну происхождения (необязательно)" value="{{ request.form.get('country', '') }}">
+
+            <label for="start_date">Дата ввоза (от):</label>
+            <input type="date" name="start_date" id="start_date" value="{{ request.form.get('start_date', '') }}">
+
+            <label for="end_date">Дата ввоза (до):</label>
+            <input type="date" name="end_date" id="end_date" value="{{ request.form.get('end_date', '') }}">
+
+            <button type="submit">Поиск</button>
+        </form>
+
+        <!-- Форма для выгрузки в Excel -->
+        <form method="POST" action="{{ url_for('export_to_excel') }}">
+            <input type="hidden" name="search_query" value="{{ request.form.get('search_query', '') }}">
+            <input type="hidden" name="country" value="{{ request.form.get('country', '') }}">
+            <input type="hidden" name="start_date" value="{{ request.form.get('start_date', '') }}">
+            <input type="hidden" name="end_date" value="{{ request.form.get('end_date', '') }}">
+            <button type="submit">Выгрузить в Excel</button>
+        </form>
+
+        <h2>Результаты поиска:</h2>
+        <ul>
+            {% for item in found_items %}
+                <li>
+                    <strong>Название:</strong> {{ item.name }}<br>
+                    <strong>Дата ввоза:</strong> {{ item.import_date }}<br>
+                    <strong>Страна происхождения:</strong> {{ item.country_of_origin }}<br>
+                    <strong>Описание:</strong> {{ item.description }}<br>
+                    <a href="{{ url_for('view_item', item_id=item.id) }}">Подробнее</a> |
+                    <a href="{{ url_for('edit_item', item_id=item.id) }}">Редактировать</a> |
+                    <a href="{{ url_for('delete_item', item_id=item.id) }}">Удалить</a>
+                </li>
+            {% else %}
+                <li>Товары не найдены.</li>
+            {% endfor %}
+        </ul>
+
+        <a class="back-button" href="{{ url_for('dashboard') }}">Назад к дэшборду</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Просмотр товара</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="view-item-container">
+        <h1>Просмотр товара</h1>
+        <strong>Название:</strong> {{ item.name }}<br>
+        <strong>Дата ввоза:</strong> {{ item.import_date }}<br>
+        <strong>Страна происхождения:</strong> {{ item.country_of_origin }}<br>
+        <strong>Описание:</strong> {{ item.description }}<br>
+        <a href="{{ url_for('edit_item', item_id=item.id) }}">Редактировать</a> |
+        <a href="{{ url_for('delete_item', item_id=item.id) }}">Удалить</a> |
+        <a href="{{ url_for('items') }}">Назад к номенклатуре</a>
+    </div>
+</body>
+</html>

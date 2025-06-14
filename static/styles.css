@@ -1,0 +1,188 @@
+body {
+    font-family: 'Century Gothic', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('fon.png'); /* Путь к изображению */
+    background-size: cover; /* Изображение будет покрывать весь фон */
+    background-repeat: no-repeat; /* Убирает повторение изображения */
+    background-attachment: fixed; /* Фиксирует изображение при прокрутке */
+    background-position: center; /* Центрирует изображение */
+    color: darkgreen; /* Цвет текста */
+}
+
+h1, h2 {
+    text-align: center;
+    linear-gradient(to bottom, blue, darkblue); /* Золотисто-зеленый цвет */
+}
+
+a {
+    color: lightcoral; /* Цвет ссылок */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.welcome-container {
+    text-align: center;
+    max-width: 500px;
+    margin-top: 200px;
+}
+.notification {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Расстояние между текстом и картинкой */
+    }
+
+.notification-image {
+        width: 40px; /* Задаем размер изображения */
+        height: 40px;
+        border-radius: 50%; /* Закругленные края для изображения */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Легкая тень */
+    }
+.welcome-button {
+    background: linear-gradient(to left, greenyellow, darkgreen);
+    color: darkgreen;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 10px;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.welcome-button:hover {
+    background: linear-gradient(to right, greenyellow, darkgreen); /* Более темный зеленый при наведении */
+}
+
+.form-container {
+    max-width: 400px; /* Максимальная ширина контейнера */
+    margin: 100px auto; /* Центрируем по вертикали и горизонтали */
+    padding: 15px;
+    background: linear-gradient(to bottom, lightgreen, green);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Центрируем содержимое */
+}
+.form-container h2 {
+    text-align: center;
+}
+.form-container input {
+    width: 100%; /* Устанавливаем ширину на 100% от контейнера */
+    padding: 12px; /* Внутренние отступы */
+    margin: 10px 0; /* Отступы сверху и снизу */
+    border: 3px solid lightgreen; /* Цвет границы */
+    border-radius: 5px; /* Скругленные углы */
+    box-sizing: border-box; /* Учитываем границу и внутренние отступы в ширине */
+}
+
+
+
+
+.form-container button {
+    background: linear-gradient(to left, lightgreen, green); /* Зеленый */
+    color: lightgreen;
+    padding: 12px; /* Отступы, соответствующие полям ввода */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%; /* Устанавливаем ширину на 100% */
+    font-size: 18px; /* Установите размер шрифта для кнопки */
+    transition: background-color 0.3s;
+}
+
+.form-container button:hover {
+    background-color: darkgreen; /* Более темный зеленый при наведении */
+}
+
+.form-container a {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.dashboard-container {
+    padding: 20px;
+}
+
+.dashboard-header {
+    display: flex; /* Flexbox для заголовка */
+    justify-content: space-between; /* Распределяет элементы по краям */
+    align-items: center; /* Выравнивание по центру по вертикали */
+}
+
+.logout-button {
+    background-color: green; /* Цвет фона кнопки */
+    color: white; /* Цвет текста */
+    padding: 12px 20px; /* Увеличенный отступ */
+    border: none; /* Без границ */
+    border-radius: 5px; /* Скругленные углы */
+    cursor: pointer; /* Указатель при наведении */
+    transition: background-color 0.3s; /* Плавный переход цвета */
+}
+
+.logout-button:hover {
+    background-color: darkgreen; /* Темнее при наведении */
+}
+
+.dashboard-content {
+    display: flex; /* Flexbox для размещения кнопок и списка */
+}
+
+.dashboard-functions {
+    width: 250px; /* Ширина колонок с функциями */
+    margin-right: 20px; /* Отступ между колонками */
+}
+
+.dashboard-functions h2 {
+    text-align: left;
+    color: darkgreen;
+
+}
+
+.dashboard-functions a {
+    display: block; /* Кнопки в столбик */
+    margin: 16px 0;
+}
+
+.dashboard-functions button {
+    background: green; /* Зеленый */
+    color: whitesmoke;
+    padding: 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-family: 'Century Gothic', sans-serif; /* Шрифт для кнопок */
+    font-size: 18px; /* Размер шрифта для кнопок */
+    transition: background-color 0.3s;
+}
+
+.dashboard-functions button:hover {
+    background-color: darkgreen; /* Более темный зеленый при наведении */
+}
+
+.dashboard-items {
+    flex: 1; /* Занимает оставшееся пространство */
+    margin-top: 0; /* Убираем отступ сверху */
+}
+
+.dashboard-items h2 {
+    text-align: center; /* Центрируем заголовок */
+}
+
+.dashboard-items ul {
+    list-style-type: none; /* Убираем маркеры списка */
+    padding: 0;
+}
+
+.dashboard-items li {
+    background: green; /* Фон для элементов списка */
+    color: whitesmoke;
+    padding: 16px;
+    margin: 5px 0;
+    border-radius: 5px;
+}

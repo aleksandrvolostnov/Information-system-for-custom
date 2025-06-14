@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Добавить товар</title>
+    <style>
+        /* Стили для контейнера формы добавления товара */
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #006400;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 30px;
+            background: linear-gradient(to right, #32cd32, #66c266);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .form-container label {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .form-container input,
+        .form-container button,
+        .file-input-container label {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #32cd32;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: lightgreen;
+            color: #333;
+        }
+
+        .form-container input:focus {
+            border-color: #006400;
+            background: #66c266;
+            outline: none;
+        }
+
+        .file-input-container {
+            position: relative;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .file-input-container input[type="file"] {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-container label {
+            background-color: lightgreen;
+            color: #333;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-input-container label:hover {
+            background-color: #006400;
+            color: white;
+        }
+
+        .form-container button {
+            background: linear-gradient(to right, #006400, #32cd32);
+            color: #fff;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background-color: #006400;
+        }
+
+        .form-container a {
+            color: lightcoral;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .form-container a:hover {
+            text-decoration: underline;
+        }
+        /* Стили для всплывающего окна */
+        .notification {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: green;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Добавить товар</h1>
+        <form method="POST" enctype="multipart/form-data" id="product-form">
+            <label for="name">Название товара:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="import_date">Дата ввоза:</label>
+            <input type="date" id="import_date" name="import_date" required>
+
+            <label for="country_of_origin">Страна происхождения:</label>
+            <input type="text" id="country_of_origin" name="country_of_origin" required>
+
+            <label for="description">Описание:</label>
+            <input type="text" id="description" name="description" required>
+
+            <div class="file-input-container">
+                <input type="file" id="file" name="file" accept=".pdf,.doc,.docx,.jpg,.png">
+                <label for="file">Загрузить файл</label>
+            </div>
+
+            <button type="submit">Добавить товар</button>
+        </form>
+        <a href="{{ url_for('dashboard') }}">Назад к дэшборду</a>
+    </div>
+
+    <!-- Всплывающее уведомление -->
+    <div class="notification" id="notification">
+        <span>Запись успешно добавлена в блокчейн!</span>
+        <img src="{{ url_for('static', filename='sticker.png') }}" alt="Успех" style="width: 100px; height: auto;">
+        <img src="{{ url_for('static', filename='zum.png') }}" alt="Успех" style="width: 100px; height: auto;">
+        <img src="{{ url_for('static', filename='mon.png') }}" alt="Успех" style="width: 100px; height: auto;">
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('#product-form');
+        const notification = document.getElementById('notification');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Убираем стандартное поведение отправки формы
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/add_item', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    // Показываем уведомление
+                    notification.classList.add('show');
+
+                    // Прячем уведомление через 3 секунды
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                        window.location.href = '/dashboard'; // Перенаправляем на дэшборд
+                    }, 3000);
+                } else {
+                    alert('Ошибка при добавлении товара.');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Ошибка соединения с сервером.');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

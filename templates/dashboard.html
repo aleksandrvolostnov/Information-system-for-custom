@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Дэшборд</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .delete-button {
+            background-color: transparent;
+            color: lightcoral;
+            border: none;
+            cursor: pointer;
+            font-family: 'Century Gothic', sans-serif;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        /* Убираем фон для заголовка и кнопки выхода */
+        .dashboard-header {
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+        }
+
+        .dashboard-header h1 {
+            margin: 0;
+        }
+
+        .logout-button {
+            position: absolute;
+            right: 50px;
+            top: 20px;
+            font-family: 'Century Gothic', sans-serif;
+            font-size: 16px;
+        }
+
+        /* Контейнер для страницы */
+        .dashboard-container {
+            display: flex; /* Используем Flexbox для расположения элементов */
+            margin-top: 100px; /* Оставляем место для фиксированного заголовка */
+            padding: 20px;
+        }
+
+        /* Контейнер для функций */
+        .dashboard-functions {
+            width: 250px; /* Ширина контейнера с функциями */
+            padding: 20px;
+            height: 80vh; /* Ограничиваем высоту контейнера */
+            position: fixed; /* Закрепляем слева */
+            top: 100px; /* Начинаем с фиксированной позиции после заголовка */
+            left: 0;
+            overflow-y: scroll; /* Включаем прокрутку, но без отображения полосы прокрутки */
+        }
+
+        /* Скрыть полосу прокрутки (для Webkit-браузеров) */
+        .dashboard-functions::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Кнопки функций */
+        .function-button {
+            font-family: 'Century Gothic', sans-serif;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        /* Контейнер для диаграммы и товаров */
+        .chart-and-items {
+            margin-left: 270px; /* Оставляем место для контейнера с функциями */
+            width: calc(100% - 270px); /* Занимаем оставшееся пространство */
+            padding: 20px;
+        }
+
+        /* Контейнер для диаграммы */
+        .chart-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Контейнер для списка товаров */
+        .dashboard-items {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-header">
+        <h1>Добро пожаловать в Единую Систему Хранения Данных.</h1>
+        <a href="{{ url_for('logout') }}" class="logout-button">Выход</a>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Контейнер с функциями -->
+        <div class="dashboard-functions">
+            <h2>Функции</h2>
+
+            <a href="{{ url_for('add_item') }}">
+                <button class="function-button">Добавить товар</button>
+            </a>
+            <a href="{{ url_for('search_items') }}">
+                <button class="function-button">Поиск товара</button>
+            </a>
+            <a href="{{ url_for('items') }}">
+                <button class="function-button">Номенклатура</button>
+            </a>
+            <a href="{{ url_for('file_storage') }}">
+                <button class="function-button">Хранилище данных</button>
+            </a>
+            <a href="{{ url_for('centers') }}">
+                <button class="function-button">Центры сертификации</button>
+            </a>
+            <a href="{{ url_for('signature') }}">
+                <button class="function-button">ЭЦП</button>
+            </a>
+        </div>
+
+        <!-- Контейнер для диаграммы и товаров -->
+        <div class="chart-and-items">
+            <!-- Диаграмма -->
+            <div class="chart-container">
+                <h2>Статистика товаров по странам</h2>
+                <canvas id="itemChart"></canvas>
+                <script>
+                    var ctx = document.getElementById('itemChart').getContext('2d');
+                    var itemChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: {{ labels | tojson if labels else '[]' }},
+                            datasets: [{
+                                label: 'Количество товаров',
+                                data: {{ data | tojson if data else '[]' }},
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                </script>
+            </div>
+
+            <!-- Список товаров -->
+            <div class="dashboard-items">
+                <h2>Номенклатура</h2>
+                <ul>
+                    {% for item in items %}
+                        <li>
+                            <strong>Название:</strong> {{ item.name }}<br>
+                            <strong>Дата ввоза:</strong> {{ item.import_date }}<br>
+                            <strong>Страна происхождения:</strong> {{ item.country_of_origin }}<br>
+                            <strong>Описание:</strong> {{ item.description }}<br>
+                            <a href="{{ url_for('view_item', item_id=item.id) }}">Подробнее</a> |
+                            <a href="{{ url_for('edit_item', item_id=item.id) }}">Редактировать</a> |
+                            <form method="POST" action="{{ url_for('delete_item', item_id=item.id) }}" style="display:inline;">
+                                <input type="hidden" name="item_id" value="{{ item.id }}">
+                                <button type="submit" class="delete-button" onclick="return confirm('Вы уверены, что хотите удалить этот товар?');">Удалить</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать товар</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Стили для контейнера редактирования товара */
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4; /* Светлый фон */
+            color: darkgreen; /* Цвет текста */
+        }
+
+        .edit-item-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 30px;
+            background: linear-gradient(to right, #32cd32, #66c266); /* Градиентный фон */
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-item-container h1 {
+            text-align: center;
+            color: white; /* Белый цвет для заголовка */
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .edit-item-container input {
+            width: calc(100% - 24px);
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #32cd32;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: lightgreen;
+            color: #333;
+        }
+
+        .edit-item-container input:focus {
+            border-color: #006400;
+            background: green;
+            outline: none;
+        }
+
+        .edit-item-container button {
+            background: linear-gradient(to right, darkgreen, lightgreen);
+            color: lightgreen;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        .edit-item-container button:hover {
+            background-color: darkgreen;
+        }
+
+        /* Стиль для кнопок загрузки файлов */
+        .file-upload-container {
+            margin: 10px 0;
+            width: 100%; /* Убедимся, что контейнер занимает всю ширину */
+        }
+
+        .file-upload-button {
+            background: linear-gradient(to right, darkgreen, lightgreen); /* То же оформление, что и у кнопки "Сохранить изменения" */
+            color: lightgreen;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%; /* Кнопки теперь на всю ширину */
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-upload-button:hover {
+            background-color: darkgreen;
+        }
+
+        .file-input {
+            display: none; /* Прячем обычный input */
+        }
+
+        .edit-item-container a {
+            color: lightcoral;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .edit-item-container a:hover {
+            text-decoration: underline;
+        }
+        /* Стили для всплывающего уведомления */
+        .notification {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: green;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            display: block;
+        }
+        /* Анимация вращения изображений */
+        .rotating-image {
+            width: 100px;
+            height: auto;
+            display: inline-block;
+            animation: rotate 4s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-item-container">
+        <h1>Редактировать товар</h1>
+        <form method="POST" action="{{ url_for('edit_item', item_id=item.id) }}" enctype="multipart/form-data" id="edit-form">
+            <input type="text" name="name" value="{{ item.name }}" placeholder="Название товара" required>
+            <input type="date" name="import_date" value="{{ item.import_date }}" required>
+            <input type="text" name="country_of_origin" value="{{ item.country_of_origin }}" placeholder="Страна происхождения" required>
+            <input type="text" name="description" value="{{ item.description }}" placeholder="Описание" required>
+
+            <div class="file-upload-container">
+                <label for="file" class="file-upload-button">Загрузить файл</label>
+                <input type="file" name="file" id="file" accept=".pdf,.doc,.docx,.jpg,.png" class="file-input">
+                <span id="file-name" class="file-name">Файл не выбран</span>
+            </div>
+
+            <div class="file-upload-container">
+                <label for="certificate" class="file-upload-button">Загрузить сертификат</label>
+                <input type="file" name="certificate" id="certificate" accept=".pdf,.doc,.docx" class="file-input">
+                <span id="certificate-name" class="file-name">Сертификат не выбран</span>
+            </div>
+
+            <button type="submit">Сохранить изменения</button>
+        </form>
+        <a href="{{ url_for('items') }}">Назад к номенклатуре</a>
+    </div>
+
+    <!-- Всплывающее уведомление -->
+    <div class="notification" id="notification">
+        <span>Изменения успешно добавлены в блокчейн!</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('#edit-form');
+            const notification = document.getElementById('notification');
+
+            const fileInput = document.getElementById('file');
+            const fileNameSpan = document.getElementById('file-name');
+            const certificateInput = document.getElementById('certificate');
+            const certificateNameSpan = document.getElementById('certificate-name');
+
+            // Обработчик изменения для поля "файл"
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length > 0) {
+                    fileNameSpan.textContent = fileInput.files[0].name; // Показываем имя файла
+                } else {
+                    fileNameSpan.textContent = 'Файл не выбран'; // Если файл не выбран
+                }
+            });
+
+            // Обработчик изменения для поля "сертификат"
+            certificateInput.addEventListener('change', () => {
+                if (certificateInput.files.length > 0) {
+                    certificateNameSpan.textContent = certificateInput.files[0].name; // Показываем имя файла
+                } else {
+                    certificateNameSpan.textContent = 'Сертификат не выбран'; // Если файл не выбран
+                }
+            });
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault(); // Убираем стандартное поведение отправки формы
+
+                // Эмуляция обработки данных и успешного сохранения
+                setTimeout(() => {
+                    // Показываем уведомление
+                    notification.classList.add('show');
+
+                    // Прячем уведомление через 3 секунды
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                        form.submit(); // Отправляем форму после уведомления
+                    }, 7000);
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>

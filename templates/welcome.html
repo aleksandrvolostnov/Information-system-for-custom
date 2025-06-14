@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добро пожаловать</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4; /* Светлый фон */
+            color: #2e8b57; /* Темно-зеленый для текста */
+            display: flex;
+            justify-content: center; /* Горизонтальное выравнивание */
+            align-items: flex-start; /* Вертикальное выравнивание с подъемом контейнера вверх */
+            height: 100vh; /* Высота экрана */
+            padding-top: 50px; /* Отступ сверху */
+        }
+
+        .welcome-container {
+            text-align: center;
+            max-width: 600px; /* Широкий контейнер */
+            padding: 20px; /* Уменьшенные отступы */
+            background: linear-gradient(to bottom right, #e6f9ec, #80e680); /* Светло-зеленый фон */
+            border-radius: 16px; /* Скругленные углы */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Легкая тень */
+            margin-top: 30px; /* Отступ сверху контейнера */
+        }
+
+        .welcome-container h1 {
+            font-size: 28px; /* Чуть меньше заголовок */
+            color: #006400; /* Темно-зеленый цвет для заголовка */
+            margin-bottom: 20px; /* Уменьшенный отступ */
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column; /* Кнопки расположены одна под другой */
+            align-items: center;
+            gap: 12px; /* Меньшее расстояние между кнопками */
+        }
+
+        .welcome-button {
+            display: inline-block;
+            width: 100%; /* Кнопки растягиваются на всю ширину */
+            max-width: 300px; /* Максимальная ширина кнопки */
+            padding: 12px; /* Уменьшенный размер кнопки */
+            text-align: center;
+            text-decoration: none; /* Убираем подчеркивание */
+            color: white; /* Белый текст */
+            background: linear-gradient(to left, #66c266, #32cd32); /* Светлый зеленый */
+            border-radius: 10px;
+            font-size: 16px; /* Чуть меньше текст */
+            font-family: 'Century Gothic', sans-serif;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .welcome-button:hover {
+            background-color: #80d480; /* Еще светлее при наведении */
+            transform: translateY(-1px); /* Легкий подъем кнопки при наведении */
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <h1>Добро пожаловать в Единую систему хранения данных таможни</h1>
+        <div class="form-container">
+            <a href="{{ url_for('login') }}" class="welcome-button">Войти</a>
+            <a href="{{ url_for('register') }}" class="welcome-button">Зарегистрироваться</a>
+        </div>
+    </div>
+</body>
+</html>

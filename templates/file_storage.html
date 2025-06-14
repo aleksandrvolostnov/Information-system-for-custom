@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Хранилище файлов</title>
+    <style>
+        /* Общие стили страницы */
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: lightgreen; /* Светлый фон */
+            color: darkgreen; /* Цвет текста */
+        }
+
+        .dashboard-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 30px;
+            background: linear-gradient(to right, #32cd32, #66c266);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h1 {
+            color: white;
+            font-size: 28px;
+        }
+
+        .logout-button {
+            background-color: #006400;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background-color: #004d00;
+        }
+
+        .dashboard-functions,
+        .dashboard-items {
+            margin-bottom: 30px;
+        }
+
+        .function-button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #32cd32;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: lightgreen;
+            color: #333;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .function-button:hover {
+            background-color: #006400;
+            color: white;
+        }
+
+        .delete-button {
+            background-color: transparent;
+            color: lightcoral;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: left;
+            transition: color 0.3s ease;
+        }
+
+        .delete-button:hover {
+            color: red;
+        }
+
+        .dashboard-items ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .dashboard-items li {
+            padding: 10px;
+            background-color: lightgreen;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-items li a {
+            color: #006400;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .dashboard-items li a:hover {
+            color: #004d00;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Хранилище файлов</h1>
+            <a href="{{ url_for('logout') }}" class="logout-button">Выход</a>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="dashboard-functions">
+                <h2>Действия</h2>
+                <a href="{{ url_for('upload_file') }}">
+                    <button class="function-button">Загрузить новый файл</button>
+                </a>
+                <a href="{{ url_for('dashboard') }}">
+                    <button class="function-button">Назад в дэшборд</button>
+                </a>
+            </div>
+
+            <div class="dashboard-items">
+                <h2>Загруженные файлы</h2>
+                <ul>
+                    {% for document in documents %}
+                        <li>
+                            <strong>Файл:</strong> {{ document.file_name }}<br>
+                            <strong>Путь:</strong> {{ document.file_path }}<br>
+                            <a href="{{ url_for('download_file', document_id=document.file_name) }}">Скачать</a> |
+                            <form action="{{ url_for('delete_file', filename=document.file_name) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="delete-button" onclick="return confirm('Вы уверены, что хотите удалить этот файл?');">Удалить</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li>Нет загруженных файлов.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

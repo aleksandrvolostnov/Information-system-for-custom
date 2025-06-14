@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Скачать файл</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Общий стиль для всей страницы */
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #006400;
+        }
+
+        /* Стили для контейнера формы скачивания файла */
+        .form-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 30px;
+            background: linear-gradient(to right, #32cd32, #66c266);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h2 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .form-container label {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .form-container select {
+            width: calc(100% - 24px);
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #32cd32;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: lightgreen;
+            color: #333;
+        }
+
+        .form-container select:focus {
+            border-color: #006400;
+            background: #66c266;
+            outline: none;
+        }
+
+        .form-container button {
+            background: linear-gradient(to right, #006400, #32cd32);
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background-color: #006400;
+        }
+
+        .form-container a {
+            color: lightcoral;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .form-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Скачать файл</h2>
+        <form action="{{ url_for('download_file') }}" method="get">
+            <label for="document_id">Документ:</label>
+            <select name="document_id" id="document_id" required>
+                {% for document in documents %}
+                    <option value="{{ document.file_name }}">{{ document.file_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Скачать</button>
+        </form>
+    </div>
+</body>
+</html>
